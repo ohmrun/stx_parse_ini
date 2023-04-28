@@ -14,6 +14,8 @@ Ini file parser. sections, ltrim and rtrim on keys and values, but no explicit s
   
 ```
 
+If you want the `Parser<String,Data>` instance go `Ini.main()`
+
 # DataType
 ```haxe
   typedef Data = {
