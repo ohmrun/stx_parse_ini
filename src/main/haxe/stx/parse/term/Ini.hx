@@ -1,6 +1,18 @@
 package stx.parse.term;
 
-class IniParser{
+import stx.parse.term.ini.Data;
+
+import stx.parse.parsers.StringParsers.*;
+
+import haxe.ds.StringMap;
+using stx.Parse;
+using stx.Pico;
+using stx.Nano;
+using stx.Test;
+using stx.Log;
+using stx.parse.term.ini.Logging;
+
+class Ini{
   static public function gapped<T>(p:Parser<String,T>):Parser<String,T>{
     return gap.many()._and(p);
   }
@@ -16,7 +28,7 @@ class IniParser{
   static public function comment(){
     return id(";").and(until(cr_or_nl.or(Parsers.Eof()))).then(
       (_) -> {
-        trace('comment');
+        __.log().trace('comment');
         return None;
       }
     );
@@ -30,7 +42,7 @@ class IniParser{
         .and(line_rhs())
         .then(
           x -> {
-            trace(x);
+            __.log().trace('$x');
             return x;
           }
         ).then(Some);
@@ -41,18 +53,18 @@ class IniParser{
   static public function line_empty(){
     return gap.many().and(cr_or_nl).then(
       _ -> {
-        trace('empty line');
+        __.log().trace('empty line');
         return None;
     });
   }
   static public function lines():Parser<String,StringMap<String>>{
     return section_head().not()._and(line()).one_many().then(
       (lines) -> {
-          trace(lines);
+          __.log().trace('$lines');
           final data = new StringMap();
           for(x in lines){
             for(tp in x){
-              trace(tp.fst());
+              __.log().trace('${tp.fst()}');
               data.set(tp.fst(),tp.snd());
             }
           }
