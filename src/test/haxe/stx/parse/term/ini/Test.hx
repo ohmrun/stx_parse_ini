@@ -21,5 +21,10 @@ class Test{
       []
     );
   }
+  static function parse(){
+    final ini = __.resource("test").string();//or whatever your file is called
+    final val = Ini.parse(ini);//Upshot<Cluster<Data>,ParseFailure>;
+    trace(val.fudge());//Cluster<Data>
+  }
 }
 
