@@ -8,22 +8,24 @@ import haxe.ds.StringMap;
 using stx.Parse;
 using stx.Pico;
 using stx.Nano;
-using stx.Test;
 using stx.Log;
 using stx.parse.term.ini.Logging;
 
+/**
+ * https://en.wikipedia.org/wiki/INI_file#Format
+ */
 class Ini{
+  static public function parse(string:String):Upshot<Cluster<Data>,ParseFailure>{
+    return main().apply(string.reader()).toUpshot().map(opt -> opt.defv([]));
+  }
   static public function gapped<T>(p:Parser<String,T>):Parser<String,T>{
     return gap.many()._and(p);
   }
   static public function until<P,R>(p:Parser<P,P>):Parser<P,Cluster<P>>{
     return Parsers.While(p.not()._and(Parsers.Something()));
   }
-  static public function parse(string:String){
-    return main().apply(string.reader()).toUpshot().fudge();
-  }
   static public function line_lhs(){
-    return line_empty().not()._and(gapped(until(id("="))).tokenize());
+    return line_empty().not()._and(gapped(until(id("="))).tokenize().then(s -> StringTools.rtrim(s)));
   }
   static public function comment(){
     return id(";").and(until(cr_or_nl.or(Parsers.Eof()))).then(
@@ -34,7 +36,7 @@ class Ini{
     );
   }
   static public function line_rhs(){
-    return until(cr_or_nl.or(Parsers.Eof())).and_(gapped(cr_or_nl)).tokenize();
+    return until(cr_or_nl.or(Parsers.Eof())).and_(gapped(cr_or_nl)).tokenize().then(x -> StringTools.ltrim(StringTools.rtrim(x)));
   }
   static public function vline():Parser<String,Option<Couple<String,String>>>{
     return line_lhs()

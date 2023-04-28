@@ -5,6 +5,7 @@ import stx.parse.term.Ini;
 
 import stx.parse.parsers.StringParsers.*;
 
+using stx.Assert;
 using stx.Parse;
 using stx.Nano;
 using stx.Test;
@@ -19,10 +20,33 @@ class Test{
   }
 }
 class IniTest extends TestCase{
+  final res : Cluster<Data> = [
+    {
+      name : None,
+      data : [
+        "this"        => "that",
+        '"something"' => '"oof"',
+        '"spaces"'    => "hmm"
+      ]
+    },
+    {
+      name : Some("subsection"),
+      data : [
+        "a"         => "1",
+        "ihbihjasd" => "true"
+      ]
+    },
+    {
+      name : ".subsubsection",
+      data : [
+        "crankle" => "fuklk"
+      ]
+    }
+  ];
   public function test(){
     final val = __.resource("test").string();
-    final v   = Ini.parse(val);
-    trace(v);
+    final v   = Ini.parse(val).fudge();
+    eq(res,v,Eq.Cluster(new stx.assert.parse.ini.eq.Data()));
   }
   // public function test_line(){
   //   final val = "a = b\n";

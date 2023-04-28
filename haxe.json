@@ -8,14 +8,16 @@
       "stx_pico",
       "stx_nano",
       "stx_parse",
-      "stx_log"
+      "stx_log",
+      "stx_assert"
     ],
     "-cp": [
       "src/main/haxe"
     ],
     "unit": {
       "--macro": [
-        "include('stx.parse',true)"
+        "include('stx.parse',true)",
+        "include('stx.assert',true)"
       ],
       "interp": {
         "--interp": true
