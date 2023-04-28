@@ -1,9 +1,22 @@
-# Haxe project
+# stx_parse_ini
 
-This is an example Haxe project scaffolded by Visual Studio Code.
+Ini file parser. sections, ltrim and rtime on keys and values, but no explicit sub structures
 
-Without further changes the structure is following:
+```haxe
+  using stx.Nano;
+  import stx.parse.term.Ini;
 
- * `src/Main.hx`: Entry point Haxe source file
- * `build.hxml`: Haxe command line file used to build the project
- * `README.md`: This file
+  function parse(){
+    final ini = __.resource("ini").string()//or whatever your file is called
+    final prs = Ini.parse(ini.reader());//Upshot<Cluster<Data>,ParseFailure>;
+  }
+  
+```
+
+# DataType
+```haxe
+  typedef Data = {
+                final name : Option<String>;
+    @:optional  final data : StringMap<String>;
+  }
+```
